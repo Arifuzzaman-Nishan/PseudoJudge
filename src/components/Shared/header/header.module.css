@@ -1,0 +1,4 @@
+.header__transition {
+  transition: all 0.1s ease-out;
+  @apply text-red-500;
+}
