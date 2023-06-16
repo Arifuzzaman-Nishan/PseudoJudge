@@ -55,8 +55,7 @@ function Login() {
   return (
     <LoginSignup
       state={{
-        input: input as LoginState,
-        setInput,
+        input,
       }}
       handleSubmit={handleSubmit}
       handleChange={handleChange}
@@ -64,6 +63,7 @@ function Login() {
       footer={loginFooter}
       animationData={loginAnimation}
       inputProperties={inputProperties}
+      btnName="Login"
     />
   );
 }

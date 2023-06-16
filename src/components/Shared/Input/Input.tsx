@@ -23,7 +23,7 @@ const Input: FC<Props> = ({
 }) => {
   return (
     <input
-      className={`w-full ${size} rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white ${className}`}
+      className={`w-full ${size} rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-400 text-sm focus:outline-none focus:border-gray-400 focus:bg-white ${className}`}
       type={type}
       placeholder={placeholder}
       value={value}

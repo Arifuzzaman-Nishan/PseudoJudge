@@ -3,7 +3,7 @@ import Input from "../Shared/Input/Input";
 import Button from "../Shared/Button/Button";
 import Lottie from "lottie-react";
 import { LoginState } from "@/app/login/page";
-import { SignupState } from "@/app/signup/signup";
+import { SignupState } from "@/app/signup/page";
 
 export interface InputProperties {
   placeholder: string;
@@ -14,22 +14,21 @@ export interface InputProperties {
   key: number;
 }
 
-type State = LoginState | SignupState;
-
-interface Props {
+interface Props<T> {
   title: string;
   inputProperties: Array<InputProperties>;
   state: {
-    input: State;
-    setInput: React.Dispatch<React.SetStateAction<State>>;
+    input: T;
   };
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   footer: React.ReactElement;
   animationData: any;
+  btnName: string;
+  errorMsg?: string;
 }
 
-const LoginSignup: FC<Props> = ({
+const LoginSignup = <T,>({
   title,
   inputProperties,
   state,
@@ -37,13 +36,15 @@ const LoginSignup: FC<Props> = ({
   handleSubmit,
   footer,
   animationData,
-}) => {
-  const { input, setInput } = state;
+  btnName,
+  errorMsg,
+}: Props<T>) => {
+  const { input } = state;
 
   return (
     <div className="prose prose-lg max-w-none">
       <div className="min-h-screen text-gray-900 flex justify-center">
-        <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
+        <div className="max-w-screen-xl m-0 bg-white shadow sm:rounded-lg flex justify-center flex-1">
           <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
             <h2 className="text-center">Welcome to PseudoJudge</h2>
             <div className="flex flex-col items-center">
@@ -56,8 +57,7 @@ const LoginSignup: FC<Props> = ({
               <div className="mx-auto max-w-xs">
                 <form onSubmit={handleSubmit} action="">
                   {inputProperties.map((inputProperty) => {
-                    const { placeholder, type, name, value, key } =
-                      inputProperty;
+                    const { placeholder, type, name, key } = inputProperty;
                     return (
                       <div
                         className={`inline-block w-full ${key > 1 && "mt-5"}`}
@@ -70,7 +70,7 @@ const LoginSignup: FC<Props> = ({
                           placeholder={placeholder}
                           type={type}
                           name={name}
-                          value={input[name as keyof State]}
+                          value={input[name as keyof T] as unknown as string}
                           onChange={handleChange}
                         />
                       </div>
@@ -83,9 +83,11 @@ const LoginSignup: FC<Props> = ({
                     type="submit"
                   >
                     <IconSvg />
-                    <span className="ml-3">LogIn</span>
+                    <span className="ml-3">{btnName}</span>
                   </Button>
                 </form>
+
+                {errorMsg && <p className="text-red-500 text-xs">{errorMsg}</p>}
 
                 {footer}
               </div>

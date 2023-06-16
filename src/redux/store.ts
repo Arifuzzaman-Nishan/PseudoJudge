@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import sidebarCollapseReducer from "./features/sidebar/sidebarCollapseSlice";
 import { apiSlice } from "./features/api/apiSlice";
 import codeCompileReducer from "./features/code/codeSlice";
+import authReducer from "./features/auth/authSlice";
 
 export const store = configureStore({
   reducer: {
     sidebarCollapseReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
     codeCompileReducer,
+    authReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>
