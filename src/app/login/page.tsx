@@ -3,6 +3,10 @@ import React, { useState } from "react";
 import loginAnimation from "../../../public/lottiefiles/login.json";
 import Link from "next/link";
 import LoginSignup from "@/components/LoginSignup/LoginSignup";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import { useAppDispatch } from "@/redux/hooks";
+import { loginResult } from "@/redux/features/auth/authSlice";
+import { useRouter } from "next/navigation";
 
 export type LoginState = {
   email: string;
@@ -10,14 +14,29 @@ export type LoginState = {
 };
 
 function Login() {
+  const router = useRouter();
   const [input, setInput] = useState<LoginState>({
     email: "",
     password: "",
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [login] = useLoginMutation();
+  const dispatch = useAppDispatch();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("handle submit...");
+
+    const data = await login({
+      email: input.email,
+      password: input.password,
+    }).unwrap();
+
+    localStorage.setItem("auth", JSON.stringify(data));
+
+    dispatch(loginResult(data));
+
+    router.push("/");
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,4 +1,4 @@
-import { Action, PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export enum Role {
   USER = "user",
@@ -15,14 +15,22 @@ export interface IAuthState {
   role: Role;
 }
 
-const initialState = {
-  _id: "",
-  username: "",
-  email: "",
+const storedDataString = localStorage.getItem("auth");
+let storedData: IAuthState | null = null;
+
+// Parse the stored data if it exists
+if (storedDataString) {
+  storedData = JSON.parse(storedDataString) as IAuthState;
+}
+
+const initialState: IAuthState = {
+  _id: storedData?._id || "",
+  username: storedData?.username || "",
+  email: storedData?.email || "",
   token: {
-    access_token: "",
+    access_token: storedData?.token?.access_token || "",
   },
-  role: Role.USER,
+  role: storedData?.role || Role.USER,
 };
 
 const auth = createSlice({
@@ -30,7 +38,7 @@ const auth = createSlice({
   initialState,
   reducers: {
     loginResult: (state, action: PayloadAction<IAuthState>) => {
-      state = { ...action.payload };
+      Object.assign(state, action.payload);
     },
   },
 });

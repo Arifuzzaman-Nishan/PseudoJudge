@@ -78,7 +78,7 @@ const LoginSignup = <T,>({
                   })}
 
                   <Button
-                    btnColor="indigo"
+                    btnColor="blue"
                     className="w-full mt-5 py-4 rounded-lg tracking-wide font-semibold"
                     type="submit"
                   >

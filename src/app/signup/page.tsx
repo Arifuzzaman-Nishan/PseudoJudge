@@ -4,15 +4,21 @@ import LoginSignup from "@/components/LoginSignup/LoginSignup";
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 import signupAmination from "../../../public/lottiefiles/signup.json";
+import { useSignupMutation } from "@/redux/features/auth/authApi";
+import { useAppDispatch } from "@/redux/hooks";
+import { loginResult } from "@/redux/features/auth/authSlice";
+import { useRouter } from "next/navigation";
 
 export type SignupState = {
   username: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  confirmPassword?: string;
 };
 
 function Signup() {
+  const router = useRouter();
+
   const [input, setInput] = useState<SignupState>({
     username: "",
     email: "",
@@ -22,8 +28,11 @@ function Signup() {
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [signup] = useSignupMutation();
+
+  const dispatch = useAppDispatch();
+
   const checkPasswords = useCallback(() => {
-    console.log("checking passwords...");
     if (input.password !== input.confirmPassword) {
       setErrorMessage("The passwords do not match.");
     } else {
@@ -35,10 +44,20 @@ function Signup() {
     checkPasswords();
   }, [checkPasswords]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("handle submit...");
-    console.log("input is ", input);
+    const data = await signup({
+      username: input.username,
+      email: input.email,
+      password: input.password,
+    }).unwrap();
+
+    localStorage.setItem("auth", JSON.stringify(data));
+
+    dispatch(loginResult(data));
+
+    router.push("/");
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
