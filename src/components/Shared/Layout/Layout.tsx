@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <Sidenavbar />
       <div className="flex-1">
         <Header />
-        <main className="p-9 bg-gray-100">{children}</main>
+        <main className="p-9 bg-gray-100 border w-full">{children}</main>
       </div>
     </div>
   );

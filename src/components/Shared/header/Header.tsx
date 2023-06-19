@@ -21,7 +21,10 @@ export default function Header() {
           <ul>
             <li className=" ">
               <FaHamburger
-                onClick={handleHamburgerClick}
+                data-hs-overlay="#docs-sidebar"
+                aria-controls="docs-sidebar"
+                aria-label="Toggle navigation"
+                // onClick={handleHamburgerClick}
                 className="text-5xl cursor-pointer py-2.5 px-2.5 rounded-full transition duration-200 hover:bg-blue-200 block text-primary"
               />
             </li>

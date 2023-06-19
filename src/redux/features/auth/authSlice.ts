@@ -15,8 +15,11 @@ export interface IAuthState {
   role: Role;
 }
 
-const storedDataString = localStorage.getItem("auth");
 let storedData: IAuthState | null = null;
+let storedDataString: string | null = null;
+if (typeof window !== "undefined") {
+  storedDataString = localStorage.getItem("auth");
+}
 
 // Parse the stored data if it exists
 if (storedDataString) {

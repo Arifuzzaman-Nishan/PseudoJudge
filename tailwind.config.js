@@ -29,20 +29,9 @@ module.exports = {
         sans: ['Outfit', ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        primary: colors.indigo,
+        primary: "var(--color-primary)",
         gray: colors.gray,
         dark: '#22272e',
-        code: {
-          green: '#b5f4a5',
-          yellow: '#ffe484',
-          purple: '#d9a9ff',
-          red: '#ff8383',
-          blue: '#93ddfd',
-          white: '#fff',
-        },
-        spotify: '#1DB954',
-        twitter: '#1da1f2',
-        facebook: '#1877f2',
       },
       width: {
         4.5: '1.125rem',
