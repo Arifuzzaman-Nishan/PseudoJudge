@@ -62,47 +62,53 @@ const Pagination: FC<PaginationProps> = ({
   }, [current, total]);
 
   return (
-    <div className="flex justify-center mt-10 space-x-1 sm:space-x-2 overflow-x-auto no-scrollbar">
-      <button
-        onClick={() => table.previousPage()}
-        className="animate__animated animate__fadeIn transition-all duration-300 ease-in-out px-2 sm:px-4 py-1 sm:py-2 m-1 text-sm sm:text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
-        disabled={!hasPreviousPage}
-      >
-        Prev
-      </button>
-      {pages.map((page: any, index: number) => {
-        if (typeof page === "number") {
-          return (
-            <button
-              onClick={() => table.setPageIndex(page - 1)}
-              key={index}
-              className={`animate__animated animate__fadeIn transition-all duration-300 ease-in-out px-2 sm:px-4 py-1 sm:py-2 m-1 text-sm sm:text-base font-medium rounded-full focus:outline-none ${
-                current === page
-                  ? "text-white bg-blue-600 hover:bg-blue-700"
-                  : "text-blue-700 bg-blue-200 hover:bg-blue-300"
-              }`}
-            >
-              {page}
-            </button>
-          );
-        } else {
-          return (
-            <span
-              key={index}
-              className="inline-flex items-center px-2 sm:px-4 py-1 sm:py-2 m-1 border border-transparent text-sm sm:text-base font-medium rounded-full text-gray-500 bg-blue-100"
-            >
-              {page}
-            </span>
-          );
-        }
-      })}
-      <button
-        onClick={() => table.nextPage()}
-        className="animate__animated animate__fadeIn transition-all duration-300 ease-in-out px-2 sm:px-4 py-1 sm:py-2 m-1 text-sm sm:text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
-        disabled={!hasNextPage}
-      >
-        Next
-      </button>
+    <div className="py-1 px-4">
+      <div className="flex items-center space-x-2">
+        <button
+          onClick={() => table.previousPage()}
+          disabled={!hasPreviousPage}
+          className="text-gray-400 hover:text-blue-600 p-4 inline-flex items-center gap-2 font-medium rounded-md"
+        >
+          <span aria-hidden="true">«</span>
+          <span className="sr-only">Previous</span>
+        </button>
+
+        {pages.map((page: any, index: number) => {
+          if (typeof page === "number") {
+            return (
+              <button
+                onClick={() => table.setPageIndex(page - 1)}
+                key={index}
+                className={`animate__animated animate__fadeIn transition-all duration-300 ease-in-out w-10 h-10 p-4 inline-flex items-center text-sm font-medium rounded-full ${
+                  current === page
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-400 hover:text-blue-600"
+                }`}
+              >
+                {page}
+              </button>
+            );
+          } else {
+            return (
+              <span
+                key={index}
+                className="w-10 h-10  p-4 inline-flex items-center text-sm font-medium rounded-full px-2 sm:px-4 py-1 sm:py-2 m-1 border border-transparent  sm:text-base  text-gray-500 bg-blue-100"
+              >
+                {page}
+              </span>
+            );
+          }
+        })}
+
+        <button
+          onClick={() => table.nextPage()}
+          disabled={!hasNextPage}
+          className="text-gray-400 hover:text-blue-600 p-4 inline-flex items-center gap-2 font-medium rounded-md"
+        >
+          <span className="sr-only">Next</span>
+          <span aria-hidden="true">»</span>
+        </button>
+      </div>
     </div>
   );
 };

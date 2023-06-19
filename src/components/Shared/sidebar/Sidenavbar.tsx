@@ -1,19 +1,8 @@
-"use client";
-import { useAppSelector } from "@/redux/hooks";
 import Link from "next/link";
 import React from "react";
 import { sidebarData } from "../assets/sidebar.data";
 
 export default function Sidenavbar() {
-  const collapseValue = useAppSelector(
-    (state) => state.sidebarCollapseReducer.collapsed
-  );
-
-  let collapseCSS = "translate-x-0 md:static";
-  if (!collapseValue) {
-    collapseCSS = "-translate-x-full";
-  }
-
   return (
     <>
       <div
@@ -39,7 +28,7 @@ export default function Sidenavbar() {
               return (
                 <li key={sidebar.id}>
                   <Link
-                    className="flex items-center gap-x-3.5 py-2 px-2.5  text-slate-700 rounded-md hover:bg-primary hover:text-white text-base bg-gray-300/50"
+                    className="flex items-center gap-x-3.5 py-2 px-2.5  text-slate-700 rounded-md hover:bg-primary hover:text-white text-base"
                     href={sidebar.path}
                   >
                     <Icon className="text-xl" />
@@ -64,7 +53,7 @@ export default function Sidenavbar() {
                 >
                   <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
                   />
                 </svg>

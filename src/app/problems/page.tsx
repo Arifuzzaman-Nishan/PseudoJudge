@@ -1,5 +1,3 @@
-"use client";
-
 import ProblemsFC from "@/components/Problems";
 
 function Problems() {
