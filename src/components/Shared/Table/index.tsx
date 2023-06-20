@@ -1,5 +1,6 @@
+import debounce from "@/utils/debounce/debounce";
 import { HeaderGroup, Row, flexRender } from "@tanstack/react-table";
-import { FC } from "react";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type Props = {
   headers: HeaderGroup<any>[];
@@ -14,6 +15,40 @@ type Props = {
 const Table: FC<Props> = ({ children, headers, rows, filter, ...rest }) => {
   const { data, content, handleRowClick } = rest;
 
+  const [query, setQuery] = useState("");
+
+  // const debounceFetch = useCallback((query: string) => {
+  //   const debouncedFetch = debounce(async (q: string) => {
+  //     console.log("fetching data...", query);
+  //   }, 3000);
+
+  //   debouncedFetch(query);
+  // }, []);
+
+  // const debounceFetch2 = useMemo(
+  //   () =>
+  //     debounce((query) => {
+  //       console.log("fetching data...", query);
+  //     }, 3000),
+  //   []
+  // );
+
+  const debounceFetch = useRef((query: string) =>
+    debounce((query: string) => {
+      console.log("fetching data...", query);
+    }, 3000)
+  );
+
+  useEffect(() => {
+    console.log("inside useEffect...");
+
+    if (query) {
+      debounceFetch.current(query);
+    } else {
+      console.log("query is empty");
+    }
+  }, [debounceFetch, query]);
+
   return (
     <div className="flex flex-col">
       <div className="-m-1.5 overflow-x-auto">
@@ -22,7 +57,7 @@ const Table: FC<Props> = ({ children, headers, rows, filter, ...rest }) => {
             <div className="py-3 px-4">
               <div className="flex items-center justify-between">
                 <div className="relative max-w-xs flex-1">
-                  <Search />
+                  <Search setQuery={setQuery} />
                 </div>
                 <div className="max-w-xs flex-1">{filter}</div>
               </div>
@@ -83,7 +118,11 @@ const Table: FC<Props> = ({ children, headers, rows, filter, ...rest }) => {
   );
 };
 
-const Search = () => {
+interface SearchProps {
+  setQuery: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Search: FC<SearchProps> = ({ setQuery }) => {
   return (
     <>
       <label htmlFor="hs-table-with-pagination-search" className="sr-only">
@@ -95,6 +134,7 @@ const Search = () => {
         id="hs-table-with-pagination-search"
         className="p-3 pl-10 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 border"
         placeholder="Search for items"
+        onChange={(e) => setQuery(e.target.value)}
       />
       <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-4">
         <svg
