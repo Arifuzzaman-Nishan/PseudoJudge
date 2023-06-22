@@ -89,7 +89,7 @@ export class ProblemService {
     return this.problemRepository.delete({ _id: id });
   }
 
-  async paginate(page: number, limit: number) {
+  async paginate(page: number, limit: number, query: string) {
     // console.log('page type is ', typeof page);
 
     if (page < 0 || limit < 0) {
@@ -99,7 +99,11 @@ export class ProblemService {
       );
     }
 
-    const total = await this.problemRepository.countDocuments({});
+    const searchQuery = query
+      ? { title: { $regex: query, $options: 'i' } }
+      : {};
+
+    const total = await this.problemRepository.countDocuments(searchQuery);
     const totalPages = Math.ceil(total / limit);
     const hasNextPage = page < totalPages - 1;
     const hasPreviousPage = page > 0;
@@ -107,7 +111,7 @@ export class ProblemService {
     const previousPage = hasPreviousPage ? page - 1 : null;
 
     const problems = await this.problemRepository.findWithPaginate(
-      {},
+      searchQuery,
       {},
       limit,
       page + 1,

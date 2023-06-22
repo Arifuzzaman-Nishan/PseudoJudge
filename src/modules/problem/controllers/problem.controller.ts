@@ -18,8 +18,9 @@ export class ProblemController {
   findWithPaginate(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
+    @Query('query') query: string,
   ) {
-    return this.problemService.paginate(page, limit);
+    return this.problemService.paginate(page, limit, query);
   }
 
   @Post('crawl')
