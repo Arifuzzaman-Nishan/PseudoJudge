@@ -1,5 +1,4 @@
 import React from "react";
-import { dracula } from "@uiw/codemirror-theme-dracula";
 import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
 import { langs } from "@uiw/codemirror-extensions-langs";
 import ReactCodeMirror from "@uiw/react-codemirror";
@@ -20,7 +19,7 @@ const CodeEditor: React.FC<any> = () => {
   );
 
   return (
-    <div>
+    <>
       <CodeEditorHeader />
       <ReactCodeMirror
         minHeight="60vh"
@@ -34,7 +33,7 @@ const CodeEditor: React.FC<any> = () => {
         className="text-lg 2xl:text-xl"
       />
       <CodeEditorFooter />
-    </div>
+    </>
   );
 };
 

@@ -22,12 +22,12 @@ const CodeEditorFooter = () => {
 
   const handleRun = () => {
     console.log("codeInfo is ", codeInfo);
-    // codeCompile({
-    //   code: codeInfo.code as string,
-    //   stdin: codeInfo.stdin,
-    //   lang: codeInfo.lang,
-    //   username: codeInfo.username,
-    // });
+    codeCompile({
+      code: codeInfo.code as string,
+      stdin: codeInfo.stdin,
+      lang: codeInfo.lang,
+      username: codeInfo.username,
+    });
   };
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -35,8 +35,8 @@ const CodeEditorFooter = () => {
   };
 
   return (
-    <div className="flex justify-between items-center bg-gray-300 p-3">
-      <Modal modalTitle="input" btnName="CustomInput">
+    <div className="flex justify-between items-center bg-gray-100 p-3 shadow-lg">
+      <Modal btnName="CustomInput" modalTitle="input">
         <textarea
           className="w-full h-full py-3 px-4 block border border-gray-200 rounded-md text-sm text-gray-600"
           rows={5}
@@ -46,11 +46,15 @@ const CodeEditorFooter = () => {
         ></textarea>
       </Modal>
       <div className="flex items-center w-full justify-end">
-        <Button btnColor="green" onClick={handleRun}>
+        <Button
+          className="bg-emerald-500 hover:bg-emerald-700 focus:ring-emerald-300"
+          onClick={handleRun}
+          btnLoading={isLoading}
+        >
           Run Input
         </Button>
 
-        <Button btnColor="blue" className="ml-5">
+        <Button className="ml-5 bg-indigo-500 hover:bg-indigo-700 focus:ring-indigo-300">
           Submit
         </Button>
       </div>

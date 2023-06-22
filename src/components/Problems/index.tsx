@@ -9,7 +9,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import Table from "../Shared/Table";
 import Pagination from "../Shared/Pagination";
 import { useRouter } from "next/navigation";

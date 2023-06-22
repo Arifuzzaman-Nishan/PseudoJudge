@@ -1,12 +1,28 @@
+import { setCode } from "@/redux/features/code/codeSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import React, { useRef, useState } from "react";
 import { FiUpload } from "react-icons/fi";
 
 const CodeEditorHeader = () => {
   const [file, setFile] = useState<File | null>(null);
 
+  const code = useAppSelector((state) => state.codeCompileReducer.code);
+
+  const dispatch = useAppDispatch();
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      setFile(event.target.files[0]);
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const code = e.target?.result;
+        if (code) {
+          dispatch(setCode(code.toString()));
+        }
+      };
+
+      reader.readAsText(file);
+
       event.target.value = "";
     }
   };

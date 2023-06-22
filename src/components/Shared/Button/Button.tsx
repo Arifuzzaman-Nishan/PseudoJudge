@@ -8,7 +8,6 @@ export enum ButtonSize {
 
 interface ButtonProps {
   children?: React.ReactNode;
-  btnColor: string;
   btnSize?: ButtonSize;
   btnLoading?: boolean;
   btnDisabled?: boolean;
@@ -22,7 +21,6 @@ const color = "green";
 
 const Button: FC<ButtonProps> = ({
   children,
-  btnColor,
   btnSize = ButtonSize.DEFAULT,
   btnLoading = false,
   btnDisabled = false,
@@ -35,7 +33,7 @@ const Button: FC<ButtonProps> = ({
     <button
       onClick={onClick}
       type={type}
-      className={`${btnSize} inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-${btnColor}-500 text-white focus:outline-none focus:ring-4 focus:ring-${btnColor}-300 transition-all ${fontSize} ${className} hover:bg-${btnColor}-700 transition-all duration-300 ease-in-out focus:shadow-outline`}
+      className={`${btnSize} inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold text-white focus:outline-none focus:ring-4 transition-all ${fontSize} ${className} transition-all duration-300 ease-in-out focus:shadow-outline`}
     >
       {btnLoading && (
         <span
