@@ -5,13 +5,25 @@ type ProblemDetailsParams = {
   problemId: string;
 };
 
+type Problems = {
+  pageIndex: number;
+  pageSize: number;
+  query?: string;
+};
+
 export const problemApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getProblems: builder.query<any, { pageIndex: number; pageSize: number }>({
-      query: ({ pageIndex, pageSize }) => ({
-        url: `/problem?page=${pageIndex}&limit=${pageSize}`,
-        method: "GET",
-      }),
+    getProblems: builder.query<any, Problems>({
+      query: ({ pageIndex, pageSize, query }) => {
+        let url = `/problem?page=${pageIndex}&limit=${pageSize}`;
+        if (!!query) {
+          url += `&query=${query}`;
+        }
+        return {
+          url: url,
+          method: "GET",
+        };
+      },
       providesTags: ["Problems"],
     }),
     getProblemWithDetails: builder.query<any, ProblemDetailsParams>({

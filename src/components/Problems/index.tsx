@@ -1,12 +1,15 @@
 "use client";
-import { useGetProblemsQuery } from "@/redux/features/problem/problemApi";
+import {
+  problemApi,
+  useGetProblemsQuery,
+} from "@/redux/features/problem/problemApi";
 import {
   ColumnDef,
   PaginationState,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import Table from "../Shared/Table";
 import Pagination from "../Shared/Pagination";
 import { useRouter } from "next/navigation";
@@ -14,6 +17,9 @@ import CustomSelect, {
   OptionType,
   SingleValueType,
 } from "../Shared/CustomSelect/CustomSelect";
+import Search from "../Shared/Search";
+import useDebounce from "@/hooks/useDebounce";
+import { useAppDispatch } from "@/redux/hooks";
 
 const judgeOptions: OptionType[] = [
   {
@@ -64,13 +70,14 @@ const ProblemsFC: FC = () => {
   );
 
   const defaultData = useMemo(() => [], []);
+  const [query, setQuery] = useState<string>("");
 
   const {
     data: problemsData,
     isLoading,
     isError,
     isSuccess,
-  } = useGetProblemsQuery({ pageIndex, pageSize });
+  } = useGetProblemsQuery({ pageIndex, pageSize, query });
 
   const table = useReactTable({
     data: problemsData?.problems ?? defaultData,
@@ -109,6 +116,31 @@ const ProblemsFC: FC = () => {
     console.log(selectedOption);
   };
 
+  const dispatch = useAppDispatch();
+
+  const handleSearch = useDebounce((query) => {
+    setQuery(query);
+  }, 500);
+
+  // useEffect(() => {
+  //   if (!!query) {
+  //     dispatch(
+  //       problemApi.endpoints.getProblems.initiate(
+  //         {
+  //           pageIndex,
+  //           pageSize,
+  //           query,
+  //         },
+  //         {
+  //           forceRefetch: true,
+  //         }
+  //       )
+  //     );
+  //   } else {
+  //     setQuery("");
+  //   }
+  // }, [dispatch, pageIndex, pageSize, query]);
+
   return (
     <div>
       <Table
@@ -117,22 +149,24 @@ const ProblemsFC: FC = () => {
         data={problemsData?.problems}
         content={content}
         handleRowClick={handleRowClick}
-        filter={
+        PaginationCP={
+          <Pagination
+            current={pageIndex + 1}
+            table={table}
+            total={problemsData?.totalPages}
+            hasNextPage={problemsData?.hasNextPage}
+            hasPreviousPage={problemsData?.hasPreviousPage}
+          />
+        }
+        filterCP={
           <CustomSelect
             instanceId="judge-select"
             options={judgeOptions}
             callback={judgeSelect}
           />
         }
-      >
-        <Pagination
-          current={pageIndex + 1}
-          table={table}
-          total={problemsData?.totalPages}
-          hasNextPage={problemsData?.hasNextPage}
-          hasPreviousPage={problemsData?.hasPreviousPage}
-        />
-      </Table>
+        SearchCP={<Search handleSearch={handleSearch} />}
+      />
     </div>
   );
 };
