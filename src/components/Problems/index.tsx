@@ -1,25 +1,15 @@
 "use client";
-import {
-  problemApi,
-  useGetProblemsQuery,
-} from "@/redux/features/problem/problemApi";
-import {
-  ColumnDef,
-  PaginationState,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { FC, useMemo, useState } from "react";
-import Table from "../Shared/Table";
-import Pagination from "../Shared/Pagination";
+import { PaginationState } from "@tanstack/react-table";
+import { FC, useState } from "react";
 import { useRouter } from "next/navigation";
-import CustomSelect, {
+import {
   OptionType,
   SingleValueType,
 } from "../Shared/CustomSelect/CustomSelect";
-import Search from "../Shared/Search";
-import useDebounce from "@/hooks/useDebounce";
-import { useAppDispatch } from "@/redux/hooks";
+import { useGetProblemsQuery } from "@/features/problem/problemApi";
+import AntdTable from "../AntdTable";
+import { Table, Tag } from "antd";
+import type { ColumnsType } from "antd/es/table";
 
 const judgeOptions: OptionType[] = [
   {
@@ -32,140 +22,126 @@ const judgeOptions: OptionType[] = [
   },
 ];
 
+interface DataType {
+  index: number;
+  title: string;
+  ojName: string;
+  difficultyRating: string;
+}
+
+const columns: ColumnsType<DataType> = [
+  {
+    title: "S.No",
+    dataIndex: "index",
+    key: "index",
+  },
+  {
+    title: "Title",
+    dataIndex: "title",
+    key: "title",
+  },
+  {
+    title: "OjName",
+    dataIndex: "ojName",
+    key: "ojName",
+    render: (ojName: string) => (
+      <span>
+        <Tag color="green">{ojName}</Tag>
+      </span>
+    ),
+  },
+  {
+    title: "Difficulty Rating",
+    dataIndex: "difficultyRating",
+    key: "difficultyRating",
+    render: (difficultyRating: string) => (
+      <span>
+        <Tag color="green">{difficultyRating}</Tag>
+      </span>
+    ),
+  },
+];
+
+type TablePaginationPosition =
+  | "topLeft"
+  | "topCenter"
+  | "topRight"
+  | "bottomLeft"
+  | "bottomCenter"
+  | "bottomRight";
+
 const ProblemsFC: FC = () => {
   const router = useRouter();
 
-  const columns = useMemo<ColumnDef<any>[]>(
-    () => [
-      {
-        header: "Title",
-        accessorKey: "title",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: "OJ Name",
-        accessorKey: "ojName",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: "Difficulty Rating",
-        accessorKey: "difficultyRating",
-        cell: (info) => info.getValue(),
-      },
-    ],
-    []
-  );
+  const [bottom, setBottom] = useState<TablePaginationPosition>("bottomLeft");
 
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 1,
+    pageIndex: 1,
+    pageSize: 2,
   });
 
-  const pagination = useMemo(
-    () => ({
-      pageIndex,
-      pageSize,
-    }),
-    [pageIndex, pageSize]
-  );
-
-  const defaultData = useMemo(() => [], []);
   const [query, setQuery] = useState<string>("");
 
   const {
-    data: problemsData,
     isLoading,
     isError,
+    data: problemsData,
     isSuccess,
-  } = useGetProblemsQuery({ pageIndex, pageSize, query });
-
-  const table = useReactTable({
-    data: problemsData?.problems ?? defaultData,
-    columns,
-    pageCount: problemsData?.totalPages ?? -1,
-    state: {
-      pagination,
-    },
-    onPaginationChange: setPagination,
-    getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
-    // debugTable: true,
+  } = useGetProblemsQuery({
+    query,
+    page: pageIndex,
+    limit: pageSize,
   });
-
-  let content: React.JSX.Element = <></>;
 
   if (isLoading) {
     console.log("loading...");
-    content = <div>Loading...</div>;
   }
-  if (!isLoading && isError) {
-    console.log("error");
-    content = <div>Error!</div>;
-  }
-  if (!isError && !isLoading && problemsData?.problems?.length === 0) {
-    console.log("no problems found");
-    content = <div>No problems found</div>;
+
+  if (isSuccess) {
+    // console.log("success data is ", problemsData);
   }
 
   const handleRowClick = (row: any) => {
     console.log("clicked row is ", row);
-    router.push(`/problem?ojName=${row.ojName}&problemId=${row.ojProblemId}`);
+    router.push(`/problem/${row.key}`);
   };
 
-  const judgeSelect = (selectedOption: SingleValueType) => {
-    console.log(selectedOption);
-  };
-
-  const dispatch = useAppDispatch();
-
-  const handleSearch = useDebounce((query) => {
-    setQuery(query);
-  }, 500);
-
-  // useEffect(() => {
-  //   if (!!query) {
-  //     dispatch(
-  //       problemApi.endpoints.getProblems.initiate(
-  //         {
-  //           pageIndex,
-  //           pageSize,
-  //           query,
-  //         },
-  //         {
-  //           forceRefetch: true,
-  //         }
-  //       )
-  //     );
-  //   } else {
-  //     setQuery("");
-  //   }
-  // }, [dispatch, pageIndex, pageSize, query]);
+  const dataSources: DataType[] = problemsData?.problems?.map(
+    (problemData: any, index: number) => {
+      const { _id, title, ojName, difficultyRating } = problemData;
+      return {
+        key: _id,
+        index: index + 1,
+        title,
+        ojName,
+        difficultyRating,
+      };
+    }
+  );
 
   return (
-    <div>
+    <div className="p-9">
       <Table
-        headers={table.getHeaderGroups()}
-        rows={table.getRowModel().rows}
-        data={problemsData?.problems}
-        content={content}
-        handleRowClick={handleRowClick}
-        PaginationCP={
-          <Pagination
-            current={pageIndex + 1}
-            table={table}
-            total={problemsData?.totalPages}
-            hasNextPage={problemsData?.hasNextPage}
-            hasPreviousPage={problemsData?.hasPreviousPage}
-          />
-        }
-        filterCP={
-          <CustomSelect
-            instanceId="judge-select"
-            options={judgeOptions}
-            callback={judgeSelect}
-          />
-        }
-        SearchCP={<Search handleSearch={handleSearch} />}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: () => handleRowClick(record), // click row
+            className: "cursor-pointer",
+          };
+        }}
+        columns={columns}
+        pagination={{
+          position: [bottom],
+          total: problemsData.pagination.total,
+          pageSize: pageSize,
+          current: pageIndex,
+          responsive: true,
+          onChange(page, pageSize) {
+            console.log("page is ", page);
+            console.log("pageSize is ", pageSize);
+            setPagination({ pageIndex: page, pageSize });
+          },
+        }}
+        dataSource={dataSources}
       />
     </div>
   );

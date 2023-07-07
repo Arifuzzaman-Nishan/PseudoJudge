@@ -5,12 +5,16 @@ import ReactCodeMirror from "@uiw/react-codemirror";
 import { EditorView } from "@codemirror/view";
 import CodeEditorHeader from "./CodeEditorHeader";
 import CodeEditorFooter from "./CodeEditorFooter";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setCode } from "@/redux/features/code/codeSlice";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "@/utils/reduxQuerySetup/reduxToolkit/hooks";
+import { setCode } from "@/features/code/codeSlice";
 
 const CodeEditor: React.FC<any> = () => {
-  const code = useAppSelector((state) => state.codeCompileReducer.code);
+  const code = useAppSelector((state) => state.codeReducer.code);
   const dispatch = useAppDispatch();
+
   const onChange = React.useCallback(
     (value: any, viewUpdate: any) => {
       dispatch(setCode(value));

@@ -1,6 +1,6 @@
-import { RxDashboard } from "react-icons/rx";
 import { AiOutlineOrderedList } from "react-icons/ai";
 import { SiCodersrank } from "react-icons/si";
+import { AiOutlineGroup } from "react-icons/ai";
 
 export const sidebarData = [
   {
@@ -38,5 +38,11 @@ export const sidebarData = [
     title: "Ranking",
     icon: SiCodersrank,
     path: "/ranking",
+  },
+  {
+    id: 4,
+    title: "Groups",
+    icon: AiOutlineGroup,
+    path: "/groups",
   },
 ];

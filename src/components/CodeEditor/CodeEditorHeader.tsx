@@ -1,12 +1,15 @@
-import { setCode } from "@/redux/features/code/codeSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setCode } from "@/features/code/codeSlice";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "@/utils/reduxQuerySetup/reduxToolkit/hooks";
 import React, { useRef, useState } from "react";
 import { FiUpload } from "react-icons/fi";
 
 const CodeEditorHeader = () => {
   const [file, setFile] = useState<File | null>(null);
 
-  const code = useAppSelector((state) => state.codeCompileReducer.code);
+  const code = useAppSelector((state) => state.codeReducer.code);
 
   const dispatch = useAppDispatch();
 

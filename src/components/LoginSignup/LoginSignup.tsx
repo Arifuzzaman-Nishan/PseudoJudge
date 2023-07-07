@@ -1,6 +1,6 @@
 import React, { FC } from "react";
-import Input from "../Shared/Input/Input";
-import Button from "../Shared/Button/Button";
+import Input from "../Shared/Input";
+import Button from "../Shared/Button";
 import Lottie from "lottie-react";
 import { LoginState } from "@/app/login/page";
 import { SignupState } from "@/app/signup/page";
@@ -78,7 +78,6 @@ const LoginSignup = <T,>({
                   })}
 
                   <Button
-                    btnColor="blue"
                     className="w-full mt-5 py-4 rounded-lg tracking-wide font-semibold"
                     type="submit"
                   >

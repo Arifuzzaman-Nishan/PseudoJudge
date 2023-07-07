@@ -5,14 +5,14 @@ import { toggleSidebarCollapse } from "@/redux/features/sidebar/sidebarCollapseS
 import { headerData } from "../assets/header.data";
 
 export default function Header() {
-  const collapseValue = useAppSelector(
-    (state) => state.sidebarCollapseReducer.collapsed
-  );
-  const dispatch = useAppDispatch();
+  // const collapseValue = useAppSelector(
+  //   (state) => state.sidebarCollapseReducer.collapsed
+  // );
+  // const dispatch = useAppDispatch();
 
-  const handleHamburgerClick = () => {
-    dispatch(toggleSidebarCollapse(!collapseValue));
-  };
+  // const handleHamburgerClick = () => {
+  //   dispatch(toggleSidebarCollapse(!collapseValue));
+  // };
 
   return (
     <header className="w-full border px-7 py-5">

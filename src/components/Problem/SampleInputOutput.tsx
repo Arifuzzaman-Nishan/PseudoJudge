@@ -1,5 +1,5 @@
 import { FC } from "react";
-import ClipBoard from "./Clipboard";
+import ClipBoard from "./ClipBoard";
 
 const SampleInputOutput: FC<any> = ({ sampleInput, sampleOutput }) => {
   const formattedTestInput = sampleInput

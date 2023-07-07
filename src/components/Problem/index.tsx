@@ -1,50 +1,35 @@
 "use client";
 
-import { setCodeInfo } from "@/redux/features/code/codeSlice";
-import { useGetProblemWithDetailsQuery } from "@/redux/features/problem/problemApi";
-import { useAppDispatch } from "@/redux/hooks";
-import { useSearchParams } from "next/navigation";
 import React, { FC, useEffect } from "react";
 import ProblemStatement from "./ProblemStatement";
 import CodeEditor from "../CodeEditor/CodeEditor";
+import { useGetProblemDetailsQuery } from "@/features/problem/problemApi";
 
-const ProblemFC = () => {
-  const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-
-  const ojName = searchParams.get("ojName");
-  const problemId = searchParams.get("problemId");
-
-  const { data, isLoading, isError, isSuccess } = useGetProblemWithDetailsQuery(
-    {
-      ojName: ojName as string,
-      problemId: problemId as string,
-    },
-    {
-      skip: !(ojName && problemId),
-    }
-  );
+const ProblemFC = ({ id }: { id: string }) => {
+  const { data, isLoading, isError, isSuccess } = useGetProblemDetailsQuery({
+    problemId: id,
+  });
 
   let content = <></>;
 
-  useEffect(() => {
-    if (isSuccess) {
-      const {
-        problemDetails: { limit },
-      } = data;
-      dispatch(
-        setCodeInfo({
-          stdin: data.problemDetails.sampleDataset.sampleInput,
-          username: "nishan",
-          lang: "cpp",
-          memorylimit: parseInt(limit.memoryLimit.replace("MB").trim()),
-          timelimit: parseInt(limit.timeLimit.replace("seconds").trim()),
-          problemId: data._id,
-          userId: "lskfslfs",
-        })
-      );
-    }
-  }, [isSuccess, data, dispatch]);
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     const {
+  //       problemDetails: { limit },
+  //     } = data;
+  //     dispatch(
+  //       setCodeInfo({
+  //         stdin: data.problemDetails.sampleDataset.sampleInput,
+  //         username: "nishan",
+  //         lang: "cpp",
+  //         memorylimit: parseInt(limit.memoryLimit.replace("MB").trim()),
+  //         timelimit: parseInt(limit.timeLimit.replace("seconds").trim()),
+  //         problemId: data._id,
+  //         userId: "lskfslfs",
+  //       })
+  //     );
+  //   }
+  // }, [isSuccess, data, dispatch]);
 
   if (isSuccess) {
     console.log("success data is ", data);
