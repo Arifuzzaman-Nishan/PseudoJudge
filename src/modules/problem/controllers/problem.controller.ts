@@ -15,12 +15,12 @@ export class ProblemController {
   constructor(private readonly problemService: ProblemService) {}
 
   @Get()
-  findWithPaginate(
+  findWithPaginateFilter(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
     @Query('query') query: string,
   ) {
-    return this.problemService.paginate(page, limit, query);
+    return this.problemService.paginateFilter(page, limit, query);
   }
 
   @Post('crawl')
@@ -33,12 +33,9 @@ export class ProblemController {
     return this.problemService.findAllProblems();
   }
 
-  @Get('findOneWithDetails')
-  findOneWithProblemDetails(
-    @Query('ojName') ojName: string,
-    @Query('problemId') ojProblemId: string,
-  ) {
-    return this.problemService.findOneProblemWithDetails(ojName, ojProblemId);
+  @Get('findOneWithDetails/:problemId')
+  findOneWithProblemDetails(@Param('problemId') problemId: string) {
+    return this.problemService.findOneProblemWithDetails(problemId);
   }
 
   @Delete('deleteOne/:id')

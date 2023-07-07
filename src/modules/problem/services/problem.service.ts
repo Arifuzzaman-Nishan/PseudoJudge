@@ -3,6 +3,8 @@ import { ProblemCrawler } from '../../crawler/services/problem.crawler';
 import { ProblemRepository } from '../repository/problem.repository';
 import { ProblemDetailsRepository } from '../repository/problem-details.repository';
 import { TestCaseCrawler } from '../../crawler/services/testcase.crawler';
+import { paginateCalculate } from 'src/shared/utils/paginate.utils';
+import mongoose from 'mongoose';
 
 enum OjName {
   LIGHT_OJ = 'LOJ',
@@ -74,13 +76,34 @@ export class ProblemService {
     return this.problemRepository.findAll();
   }
 
-  async findOneProblemWithDetails(ojName: string, ojProblemId: string) {
-    const [data] = await this.problemRepository.findWithPopulate(
-      { ojName, ojProblemId },
-      'problemDetails',
-      undefined,
-      '-testDataset',
-    );
+  async findOneProblemWithDetails(problemId: string) {
+    console.log('problemId is ', problemId);
+
+    const [data] = await this.problemRepository.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(problemId), // convert to ObjectId if `problemId` is a string
+        },
+      },
+      {
+        $lookup: {
+          from: 'problemdetails',
+          localField: 'problemDetails',
+          foreignField: '_id',
+          as: 'problemDetails',
+        },
+      },
+      {
+        $unwind: '$problemDetails', // Deconstructs problemDetails to not be an array
+      },
+      {
+        $project: {
+          'problemDetails.testDataset': 0, // Exclude testDataset field
+        },
+      },
+    ]);
+
+    console.log('data is ', data);
 
     return data;
   }
@@ -89,7 +112,7 @@ export class ProblemService {
     return this.problemRepository.delete({ _id: id });
   }
 
-  async paginate(page: number, limit: number, query: string) {
+  async paginateFilter(page: number, limit: number, query: string) {
     // console.log('page type is ', typeof page);
 
     if (page < 0 || limit < 0) {
@@ -104,26 +127,33 @@ export class ProblemService {
       : {};
 
     const total = await this.problemRepository.countDocuments(searchQuery);
-    const totalPages = Math.ceil(total / limit);
-    const hasNextPage = page < totalPages - 1;
-    const hasPreviousPage = page > 0;
-    const nextPage = hasNextPage ? page + 1 : null;
-    const previousPage = hasPreviousPage ? page - 1 : null;
 
-    const problems = await this.problemRepository.findWithPaginate(
-      searchQuery,
-      {},
-      limit,
-      page + 1,
-    );
+    const pagination = paginateCalculate(total, page, limit);
+
+    const problems = await this.problemRepository.aggregate([
+      {
+        $match: searchQuery,
+      },
+      {
+        $skip: pagination.skip,
+      },
+      {
+        $limit: limit,
+      },
+      {
+        $project: {
+          groups: 0,
+          __v: 0,
+        },
+      },
+    ]);
+
+    delete pagination.skip;
 
     return {
-      total,
-      totalPages,
-      hasNextPage,
-      hasPreviousPage,
-      nextPage,
-      previousPage,
+      pagination: {
+        total,
+      },
       problems,
     };
   }

@@ -5,15 +5,15 @@ export class GroupEnrollmentKey {
   generateEnrollmentKey() {
     const enrollmentKey = Math.random().toString(36).substring(2);
 
-    const enrollmentKeyExpiration = new Date();
+    // const enrollmentKeyExpiration = new Date();
 
-    enrollmentKeyExpiration.setMinutes(
-      enrollmentKeyExpiration.getMinutes() + 20,
-    );
+    // enrollmentKeyExpiration.setMinutes(
+    //   enrollmentKeyExpiration.getMinutes() + 20,
+    // );
 
     return {
       enrollmentKey,
-      enrollmentKeyExpiration,
+      // enrollmentKeyExpiration,
     };
   }
 }

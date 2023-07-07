@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { UserController } from './controllers/user.controller';
 import { UserService } from './services/user.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
 import { UserRepository } from './repository/user.repository';
+import { GroupModule } from '../group/group.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UserRepository } from './repository/user.repository';
         schema: UserSchema,
       },
     ]),
+    forwardRef(() => GroupModule),
   ],
   controllers: [UserController],
   providers: [UserService, UserRepository],

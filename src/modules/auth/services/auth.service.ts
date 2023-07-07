@@ -24,7 +24,7 @@ export class AuthService {
 
     const newUser = await this.userService.createUser(dto);
 
-    const { hashedPassword, codes, ...result } = newUser.toObject({
+    const { hashedPassword, ...result } = newUser.toObject({
       versionKey: false,
     });
 
@@ -47,7 +47,7 @@ export class AuthService {
     const user = await this.userService.findOneByField(email);
 
     if (user && user && (await bcrypt.compare(password, user.hashedPassword))) {
-      const { hashedPassword, codes, ...result } = user.toObject({
+      const { hashedPassword, ...result } = user.toObject({
         versionKey: false,
       });
       return result;

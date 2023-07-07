@@ -82,7 +82,7 @@ export class CodeService {
       problem: problem,
       user: user,
     });
-    user.codes.push(code);
+
     await user.save();
 
     // here running the judge container and gives the verdict...

@@ -7,6 +7,7 @@ export class GroupController {
 
   @Post('create')
   create(@Body() dto: any) {
+    console.log('group dto is ', dto);
     return this.groupService.createGroup(dto);
   }
 
@@ -15,19 +16,24 @@ export class GroupController {
     return this.groupService.findAllGroups();
   }
 
+  @Get('findOne/:id')
+  findOne(@Param('id') id: string) {
+    return this.groupService.findOneGroup(id);
+  }
+
   @Get('findAll-with-problems')
   findAllWithProblems() {
     return this.groupService.findAllGroupsWithProblems();
   }
 
-  @Post('user-join')
-  userJoin(@Body() dto: any) {
-    return this.groupService.userJoinGroup(dto);
-  }
-
-  @Post('users-added')
+  @Post('usersAdded')
   usersAdded(@Body() dto: any) {
     return this.groupService.usersAddedIntoGroup(dto);
+  }
+
+  @Post('userEnroll')
+  userJoin(@Body() dto: any) {
+    return this.groupService.userJoinGroup(dto);
   }
 
   @Delete('user-removed')

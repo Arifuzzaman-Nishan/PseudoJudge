@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Query } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 
 @Controller('user')
@@ -11,8 +11,9 @@ export class UserController {
   // }
 
   @Get('findAll')
-  findAll() {
-    return this.userService.findAllUser();
+  findAll(@Query() query: { group: string; groupId: string }) {
+    // console.log('query is ', query);
+    return this.userService.findAllUser(query);
   }
 
   @Get('findOne/:id')

@@ -50,8 +50,11 @@ export abstract class BaseRepository<T extends Document> {
       .exec();
   }
 
-  findAll(projection?: ProjectionFields<T>): Promise<T[]> {
-    return this.model.find({}, projection).exec();
+  findAll(
+    filter?: FilterQuery<T>,
+    projection?: ProjectionFields<T>,
+  ): Promise<T[]> {
+    return this.model.find(filter, projection).exec();
   }
 
   findOne(id: string, projection?: ProjectionFields<T>): Promise<T> {
