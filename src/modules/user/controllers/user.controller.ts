@@ -25,4 +25,14 @@ export class UserController {
   delete(@Param('id') id: string) {
     return this.userService.deleteOneUser(id);
   }
+
+  @Get('statistics/:id')
+  statistics(@Param('id') id: string) {
+    return this.userService.statistics(id);
+  }
+
+  @Get('submittedCode/:id')
+  code(@Param('id') id: string, @Query('period') period: string) {
+    return this.userService.submittedCode(id, period);
+  }
 }

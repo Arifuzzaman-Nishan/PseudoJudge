@@ -36,7 +36,7 @@ export class GroupController {
     return this.groupService.userJoinGroup(dto);
   }
 
-  @Delete('user-removed')
+  @Delete('userRemoved')
   userRemoved(@Body() dto: any) {
     return this.groupService.userRemovedFromGroup(dto);
   }

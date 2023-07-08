@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
 import { UserRepository } from './repository/user.repository';
 import { GroupModule } from '../group/group.module';
+import { CodeModule } from '../code/code.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { GroupModule } from '../group/group.module';
       },
     ]),
     forwardRef(() => GroupModule),
+    forwardRef(() => CodeModule),
   ],
   controllers: [UserController],
   providers: [UserService, UserRepository],

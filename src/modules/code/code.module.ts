@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { CodeController } from './controllers/code.controller';
 import { CodeService } from './services/code.service';
 import { CompilerboxModule } from '../compilerbox/compilerbox.module';
@@ -11,11 +11,12 @@ import { ProblemModule } from '../problem/problem.module';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Code.name, schema: CodeSchema }]),
-    UserModule,
+    forwardRef(() => UserModule),
     ProblemModule,
     CompilerboxModule,
   ],
   controllers: [CodeController],
   providers: [CodeService, CodeRepository],
+  exports: [CodeRepository],
 })
 export class CodeModule {}

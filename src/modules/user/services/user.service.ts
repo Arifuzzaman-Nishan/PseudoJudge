@@ -4,12 +4,15 @@ import * as bcrypt from 'bcrypt';
 import { GroupRepository } from 'src/modules/group/repository/group.repository';
 import { UserRole } from '../schemas/user.schema';
 import mongoose from 'mongoose';
+import { DateTime } from 'luxon';
+import { CodeRepository } from 'src/modules/code/repository/code.repository';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly groupRepository: GroupRepository,
+    private readonly codeRepository: CodeRepository,
   ) {}
 
   async createUser(dto: any) {
@@ -106,5 +109,111 @@ export class UserService {
     return this.userRepository.delete({
       _id: id,
     });
+  }
+
+  async statistics(userId: string) {
+    const today = DateTime.local().startOf('day');
+    const yesterday = today.minus({ days: 1 });
+    const weekStart = today.minus({ weeks: 1 });
+
+    const userStatistics = await this.codeRepository.aggregate([
+      {
+        $match: {
+          user: new mongoose.Types.ObjectId(userId),
+          verdict: 'Accepted',
+        },
+      },
+      {
+        $sort: { createdAt: 1 },
+      },
+      {
+        $group: {
+          _id: '$problem',
+          createdAt: { $first: '$createdAt' },
+          isToday: {
+            $first: {
+              $cond: [{ $gte: ['$createdAt', today.toJSDate()] }, 1, 0],
+            },
+          },
+          isYesterday: {
+            $first: {
+              $cond: [
+                {
+                  $and: [
+                    { $gte: ['$createdAt', yesterday.toJSDate()] },
+                    { $lt: ['$createdAt', today.toJSDate()] },
+                  ],
+                },
+                1,
+                0,
+              ],
+            },
+          },
+          isThisWeek: {
+            $first: {
+              $cond: [{ $gte: ['$createdAt', weekStart.toJSDate()] }, 1, 0],
+            },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalAccepted: { $sum: 1 },
+          acceptedToday: { $sum: '$isToday' },
+          acceptedYesterday: { $sum: '$isYesterday' },
+          acceptedThisWeek: { $sum: '$isThisWeek' },
+        },
+      },
+    ]);
+
+    return userStatistics;
+  }
+
+  async submittedCode(userId: string, period: string) {
+    const today = DateTime.local().startOf('day');
+    const yesterday = today.minus({ days: 1 });
+    const weekly = today.minus({ weeks: 1 });
+
+    let query = {};
+    switch (period) {
+      case 'today':
+        query = {
+          createdAt: {
+            $gte: today.toJSDate(),
+          },
+        };
+        break;
+      case 'yesterday':
+        query = {
+          createdAt: {
+            $gte: yesterday.toJSDate(),
+            $lt: today.toJSDate(),
+          },
+        };
+        break;
+      case 'weekly':
+        query = {
+          createdAt: {
+            $gte: weekly.toJSDate(),
+          },
+        };
+        break;
+      default:
+        query = {};
+    }
+
+    const userSubmittedCode = await this.codeRepository.aggregate([
+      {
+        $match: {
+          user: new mongoose.Types.ObjectId(userId),
+        },
+      },
+      {
+        $match: query,
+      },
+    ]);
+
+    return userSubmittedCode;
   }
 }

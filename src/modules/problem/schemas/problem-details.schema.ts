@@ -66,11 +66,14 @@ export class ProblemDetails {
   sampleDataset: ISampleDataset;
 
   @Prop({
-    required: true,
     type: {
       testInput: String,
       testOutput: String,
       _id: false,
+    },
+    default: {
+      testInput: null,
+      testOutput: null,
     },
   })
   testDataset: ITestDataset;

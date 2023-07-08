@@ -3,7 +3,6 @@ import { GroupEnrollmentKey } from '../utils/group.enrollmentkey';
 import { GroupRepository } from '../repository/group.repository';
 import { UserRepository } from 'src/modules/user/repository/user.repository';
 import { ProblemRepository } from 'src/modules/problem/repository/problem.repository';
-import { UserRole } from 'src/modules/user/schemas/user.schema';
 import mongoose from 'mongoose';
 
 @Injectable()

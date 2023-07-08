@@ -6,6 +6,8 @@ import { GroupModule } from './modules/group/group.module';
 import { ProblemModule } from './modules/problem/problem.module';
 import { CodeModule } from './modules/code/code.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { APP_FILTER } from '@nestjs/core';
+import { AllExceptionsFilter } from './shared/filters/all-exceptions.filter';
 
 console.log('env is ', process.env.NODE_ENV);
 
@@ -21,6 +23,12 @@ console.log('env is ', process.env.NODE_ENV);
     ProblemModule,
     CodeModule,
     AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
   ],
 })
 export class AppModule {}

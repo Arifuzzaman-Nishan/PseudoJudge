@@ -5,18 +5,18 @@ import { User } from '../../user/schemas/user.schema';
 
 export type CodeDocument = HydratedDocument<Code>;
 
-export enum Verdict {
-  PENDING = 'PENDING',
-  ACCEPTED = 'ACCEPTED',
-  WRONG_ANSWER = 'WRONG ANSWER',
-  RUNTIME_ERROR = 'RUNTIME ERROR',
-  TIME_LIMIT_EXCEEDED = 'TIME LIMIT EXCEEDED',
-  COMPILATION_ERROR = 'COMPILATION ERROR',
-  MEMORY_LIMIT_EXCEEDED = 'MEMORY LIMIT EXCEEDED',
-  SEGMENTATION_FAULT = 'SEGMENTATION FAULT',
-  PRESENTATION_ERROR = 'PRESENTATION ERROR',
-  ABNORMAL_TERMINATION = 'ABNORMAL TERMINATION',
-}
+// export enum Verdict {
+//   PENDING = 'PENDING',
+//   ACCEPTED = 'ACCEPTED',
+//   WRONG_ANSWER = 'WRONG ANSWER',
+//   RUNTIME_ERROR = 'RUNTIME ERROR',
+//   TIME_LIMIT_EXCEEDED = 'TIME LIMIT EXCEEDED',
+//   COMPILATION_ERROR = 'COMPILATION ERROR',
+//   MEMORY_LIMIT_EXCEEDED = 'MEMORY LIMIT EXCEEDED',
+//   SEGMENTATION_FAULT = 'SEGMENTATION FAULT',
+//   PRESENTATION_ERROR = 'PRESENTATION ERROR',
+//   ABNORMAL_TERMINATION = 'ABNORMAL TERMINATION',
+// }
 
 export enum CodeLang {
   CPP = 'cpp',
@@ -33,15 +33,19 @@ export class Code {
 
   @Prop({
     required: true,
-    enum: Verdict,
-    default: Verdict.PENDING,
+    default: 'Pending',
   })
-  verdict: Verdict;
+  verdict: string;
 
   @Prop({
     default: null,
   })
   codeError: string;
+
+  @Prop({
+    required: true,
+  })
+  memory: string;
 
   @Prop({
     required: true,
@@ -51,7 +55,7 @@ export class Code {
   lang: CodeLang;
 
   @Prop({
-    required: true,
+    default: null,
   })
   codeFolderPath: string;
 

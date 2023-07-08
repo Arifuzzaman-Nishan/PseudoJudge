@@ -7,7 +7,7 @@ import { paginateCalculate } from 'src/shared/utils/paginate.utils';
 import mongoose from 'mongoose';
 
 enum OjName {
-  LIGHT_OJ = 'LOJ',
+  LIGHT_OJ = 'LightOJ',
   UVA = 'UVA',
 }
 
@@ -28,21 +28,21 @@ export class ProblemService {
       problemResult = await this.problemCrawler.crawlUvaProblem(dto);
     }
 
-    const { testInput, testOutput } = await this.testCaseCrawler.crawlTestCase({
-      ojName: dto?.ojName,
-      ojProblemId: problemResult?.ojProblemId,
-    });
+    // const { testInput, testOutput } = await this.testCaseCrawler.crawlTestCase({
+    //   ojName: dto?.ojName,
+    //   ojProblemId: problemResult?.ojProblemId,
+    // });
 
-    problemResult = {
-      ...problemResult,
-      problemDetails: {
-        ...problemResult.problemDetails,
-        testDataset: {
-          testInput,
-          testOutput,
-        },
-      },
-    };
+    // problemResult = {
+    //   ...problemResult,
+    //   problemDetails: {
+    //     ...problemResult.problemDetails,
+    //     testDataset: {
+    //       testInput,
+    //       testOutput,
+    //     },
+    //   },
+    // };
 
     const { title, ojProblemId, problemDetails } = problemResult;
 
@@ -51,8 +51,6 @@ export class ProblemService {
     });
 
     if (!findProblem) {
-      // console.log('problemDetails is ', problemDetails);
-
       const newProblemDetails = await this.problemDetailsRepository.create(
         problemDetails,
       );
