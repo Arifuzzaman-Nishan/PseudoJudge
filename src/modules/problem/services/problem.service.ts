@@ -101,7 +101,7 @@ export class ProblemService {
       },
     ]);
 
-    console.log('data is ', data);
+    // console.log('data is ', data);
 
     return data;
   }

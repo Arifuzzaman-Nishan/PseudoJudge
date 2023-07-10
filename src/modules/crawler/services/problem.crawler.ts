@@ -5,6 +5,7 @@ import { helper } from 'src/shared/utils/helper';
 import { BaseCrawler } from './baseCrawler';
 import { lightOjSelectors } from '../assets/selectordata';
 import { PdfToTextService } from '../../pdf-to-text/services/pdftotext.service';
+import axios from 'axios';
 puppeteer.use(StealthPlugin());
 
 // interface IProblemDetails {
@@ -42,6 +43,13 @@ puppeteer.use(StealthPlugin());
 export class ProblemCrawler extends BaseCrawler {
   constructor(private readonly pdfToTextService: PdfToTextService) {
     super();
+  }
+
+  async pdfBase64(url: string) {
+    const response = await axios.get(url, { responseType: 'arraybuffer' });
+    const base64 = Buffer.from(response.data, 'binary').toString('base64');
+
+    return base64;
   }
 
   async crawlLightOJProblem(dto: any) {

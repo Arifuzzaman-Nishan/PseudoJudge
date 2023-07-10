@@ -4,6 +4,7 @@ import { GroupRepository } from '../repository/group.repository';
 import { UserRepository } from 'src/modules/user/repository/user.repository';
 import { ProblemRepository } from 'src/modules/problem/repository/problem.repository';
 import mongoose from 'mongoose';
+import { CustomHttpException } from 'src/shared/exceptions/custom-http.exception';
 
 @Injectable()
 export class GroupService {
@@ -125,10 +126,16 @@ export class GroupService {
     const group = await this.groupRepository.findOne(groupId);
 
     if (!group) {
-      throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Group not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    return this.groupRepository.updateOne(
+    await this.groupRepository.updateOne(
       {
         _id: groupId,
       },
@@ -136,8 +143,16 @@ export class GroupService {
         $pull: {
           users: userId,
         },
+        $inc: {
+          totalMembers: -1,
+        },
       },
     );
+
+    return {
+      message: 'User successfully removed from group',
+      groupId: groupId,
+    };
   }
 
   // group problem functionality...
