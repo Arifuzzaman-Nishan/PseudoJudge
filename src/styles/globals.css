@@ -43,3 +43,7 @@ html {
     width: calc(100% - var(--body-area));
   } */
 }
+
+.react-pdf__Page__svg {
+  margin: 0 auto;
+}

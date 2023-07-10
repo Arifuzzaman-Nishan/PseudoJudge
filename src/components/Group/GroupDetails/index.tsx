@@ -3,6 +3,7 @@
 import {
   useGroupDetailsQuery,
   useUserAddedMutation,
+  useUserRemovedMutation,
 } from "@/features/group/groupApi";
 import { Descriptions, Divider, Radio, Space, Table } from "antd";
 import React, { FC, useState } from "react";
@@ -90,31 +91,51 @@ interface UsersTableProps {
   groupId: string;
 }
 
-const usersInColumns = [
-  {
-    title: "S.No",
-    dataIndex: "index",
-  },
-  {
-    title: "UserName",
-    dataIndex: "username",
-  },
-  {
-    title: "ID",
-    dataIndex: "id",
-  },
-  {
-    title: "Email",
-    dataIndex: "email",
-  },
-  {
-    title: "Action",
-    dataIndex: "action",
-    render: () => <h1>Remove</h1>,
-  },
-];
-
 const UsersTable: FC<UsersTableProps> = ({ groupId }) => {
+  const { mutate } = useUserRemovedMutation();
+
+  const handleUserRemoved = ({
+    groupId,
+    userId,
+  }: {
+    groupId: string;
+    userId: string;
+  }) => {
+    console.log("user removed ", groupId, userId);
+    mutate({ groupId, userId });
+  };
+
+  const usersInColumns = [
+    {
+      title: "S.No",
+      dataIndex: "index",
+    },
+    {
+      title: "UserName",
+      dataIndex: "username",
+    },
+    {
+      title: "ID",
+      dataIndex: "id",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      render: () => <h1 className="cursor-pointer">Remove</h1>,
+      onCell: (record: any, rowIndex: number) => ({
+        onClick: () =>
+          handleUserRemoved({
+            groupId,
+            userId: record._id,
+          }),
+      }),
+    },
+  ];
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
@@ -130,7 +151,7 @@ const UsersTable: FC<UsersTableProps> = ({ groupId }) => {
 
     content = (
       <Table
-        columns={usersInColumns}
+        columns={usersInColumns as any}
         dataSource={usersInGroupData?.map((user: any, index: number) => ({
           index: index + 1,
           key: user._id,

@@ -102,7 +102,7 @@ const ProblemsFC: FC = () => {
   }
 
   const handleRowClick = (row: any) => {
-    console.log("clicked row is ", row);
+    // console.log("row is ", row);
     router.push(`/problem/${row.key}`);
   };
 

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import ProblemStatement from "./ProblemStatement";
 import CodeEditor from "../CodeEditor/CodeEditor";
 import { useGetProblemDetailsQuery } from "@/features/problem/problemApi";
+import { Tabs } from "antd";
 
 const ProblemFC = ({ id }: { id: string }) => {
   const { data, isLoading, isError, isSuccess } = useGetProblemDetailsQuery({
@@ -31,18 +32,43 @@ const ProblemFC = ({ id }: { id: string }) => {
   //   }
   // }, [isSuccess, data, dispatch]);
 
+  const onChange = (key: string) => {
+    console.log(key);
+  };
+
   if (isSuccess) {
     console.log("success data is ", data);
 
-    content = <ProblemStatement problem={data} />;
+    content =
+      data?.ojName === "LOJ" ? (
+        <ProblemStatement problem={data} />
+      ) : (
+        <UvaProblemStatement problem={data} />
+      );
   }
+
+  const items = [
+    {
+      key: "1",
+      label: `Problem`,
+      children: (
+        <div className="overflow-x-hidden overflow-y-auto">
+          {isLoading ? <Loader /> : content}
+        </div>
+      ),
+    },
+    {
+      key: "2",
+      label: `Submissions`,
+      children: <h1>Code Submission</h1>,
+    },
+  ];
 
   return (
     <div className="h-full overflow-hidden w-full xl:flex">
       <section className="left__section p-8 xl:w-[60%]">
-        <div className="overflow-x-hidden overflow-y-auto">
-          {isLoading ? <Loader /> : content}
-        </div>
+        <Tabs defaultActiveKey="1" items={items} centered onChange={onChange} />
+        ;
       </section>
       <section className="right__section flex-1">
         <CodeEditor />
@@ -52,6 +78,24 @@ const ProblemFC = ({ id }: { id: string }) => {
 };
 
 export default ProblemFC;
+
+const UvaProblemStatement: FC<{ problem?: any }> = ({ problem }) => {
+  const fileUrl = `data:application/pdf;base64,${problem?.base64}`;
+
+  return (
+    <div>
+      <PDFViewer base64String={fileUrl} />
+    </div>
+  );
+};
+
+function PDFViewer({ base64String }: { base64String: string }) {
+  return (
+    <iframe src={base64String} style={{ width: "100%", height: "90vh" }}>
+      Your browser does not support iframes.
+    </iframe>
+  );
+}
 
 const Loader: FC<any> = () => {
   return (

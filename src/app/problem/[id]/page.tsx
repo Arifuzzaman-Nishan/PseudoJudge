@@ -3,13 +3,25 @@ import { BASE_API_URL } from "@/utils/constant/baseApiUrl";
 import getQueryClient from "@/utils/reduxQuerySetup/reactQuery/getQueryClient";
 import { Hydrate, dehydrate } from "@tanstack/react-query";
 
+async function pdfBase64(url: string) {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  const base64 = Buffer.from(arrayBuffer).toString("base64");
+
+  return base64;
+}
+
 async function getProblemDetails(url: string) {
   const res = await fetch(url, {
     method: "GET",
     cache: "no-cache",
   });
+
   const data = await res.json();
-  console.log("problem details data is ", data);
+  if (data.ojName === "UVA") {
+    data.base64 = await pdfBase64(data.problemDetails.pdfUrl);
+  }
+
   return data;
 }
 

@@ -2,7 +2,7 @@
 const nextConfig = {
     images: {
         domains: ['static.lightoj.com'],
-    }
+    },
 }
 
 module.exports = nextConfig

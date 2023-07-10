@@ -1,7 +1,5 @@
 "use client";
 import { FaHamburger } from "react-icons/fa";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { toggleSidebarCollapse } from "@/redux/features/sidebar/sidebarCollapseSlice";
 import { headerData } from "../assets/header.data";
 
 export default function Header() {

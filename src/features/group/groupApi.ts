@@ -33,9 +33,39 @@ const group = {
 
         queryClient.invalidateQueries(["users", userNotInUrl]);
         queryClient.invalidateQueries(["users", userInUrl]);
+        queryClient.invalidateQueries(["group", data.groupId]);
+      },
+    });
+  },
+  useUserRemovedMutation: () => {
+    const queryClient = useQueryClient();
+    const url = `${BASE_API_URL}/group/userRemoved`;
+
+    return useMutation({
+      mutationKey: ["userRemoved"],
+      mutationFn: (data: any) =>
+        fetch(url, {
+          method: "DELETE",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then((res) => res.json()),
+      onSuccess: (data: any) => {
+        const userInUrl = `${BASE_API_URL}/user/findAll?group=in&groupId=${data.groupId}`;
+
+        const userNotInUrl = `${BASE_API_URL}/user/findAll?group=notIn&groupId=undefined`;
+
+        queryClient.invalidateQueries(["users", userNotInUrl]);
+        queryClient.invalidateQueries(["users", userInUrl]);
+        queryClient.invalidateQueries(["group", data.groupId]);
       },
     });
   },
 };
 
-export const { useGroupDetailsQuery, useUserAddedMutation } = group;
+export const {
+  useGroupDetailsQuery,
+  useUserAddedMutation,
+  useUserRemovedMutation,
+} = group;
